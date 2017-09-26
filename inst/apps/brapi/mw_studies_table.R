@@ -1,7 +1,7 @@
 
 read_study <- function(studyDbId = 1){
   fp = system.file(
-    paste0("apps/brapi/data/studies_table_", studyDbId, ".csv"),
+    paste0("apps/brapi/data_full/studies_table_", studyDbId, ".csv"),
     package = "brapiTS")
 
   tryCatch({
@@ -11,16 +11,7 @@ read_study <- function(studyDbId = 1){
   }
   )
 }
-#
-# studies_table2_data = tryCatch({
-#   res <- suppressMessages(
-#    readr::read_csv(system.file("apps/brapi/data/studies_table_2.csv", package = "brapi"))
-#   )
-#   res
-# }, error = function(e) {
-#   NULL
-# }
-# )
+
 
 
 studies_table_list = function(studyDbId = "any", format = "json"){
@@ -65,10 +56,11 @@ studies_table = list(
 
 
 process_studies_table <- function(req, res, err){
+  message("Hi")
   studyDbId = basename(stringr::str_replace(req$path, "/table[/]?", ""))
   prms <- names(req$params)
   format = ifelse('format' %in% prms, req$params$format, "json")
-  #message(format)
+  message(format)
 
   if(format == "json") {
     studies_table$result = studies_table_list(studyDbId, format)
@@ -94,22 +86,12 @@ process_studies_table <- function(req, res, err){
 
 process_studies_table_format <- function(req, res, err){
   prms <- names(req$params)
-  #format = ifelse('format' %in% prms, req$params$format, "json")
   format = basename(req$path)
 
   studyDbId = basename(stringr::str_replace(req$path, paste0("/table/", format, "[/]?"), ""))
-  # message("---")
-  # message(format)
-  # message(studyDbId)
-  #out = NULL
-  #if(format %in% c("csv", "tsv")) {
 
     out <- read_study(studyDbId)
     txt = ifelse(is.null(out), '', toTextTable(out, format, FALSE))
-    #out = as.character(txt)
-
-    #message(out)
-    #message(txt)
 
     if(txt == '') {
       res$set_status(404)
@@ -120,7 +102,7 @@ process_studies_table_format <- function(req, res, err){
       res$content_type(paste0("text/", format))
       res$text(txt)
     }
-  #}
+
 }
 
 
@@ -189,11 +171,7 @@ mw_studies_table <<-
   get("/brapi/v1/studies/[0-9a-zA-Z]{1,12}/table/tsv[/]?", function(req, res, err){
     process_studies_table_format(req, res, err)
   })  %>%
-
-  get("/brapi/v1/studies/[0-9a-zA-Z]{1,12}/table/tsv[/]?", function(req, res, err){
-    process_studies_table_format(req, res, err)
-  })  %>%
-
+  
   post("/brapi/v1/studies/[0-9a-zA-Z]{1,12}/table[/]?", function(req, res, err){
     process_studies_table_save(req, res, err)
   }) %>%

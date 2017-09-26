@@ -35,6 +35,7 @@ source(system.file("apps/brapi/mw_seasons.R", package = "brapiTS"))
 source(system.file("apps/brapi/mw_trials.R", package = "brapiTS"))
 source(system.file("apps/brapi/mw_studies.R", package = "brapiTS"))
 source(system.file("apps/brapi/mw_studies_search.R", package = "brapiTS"))
+source(system.file("apps/brapi/mw_studies_table.R", package = "brapiTS"))
 
 source(system.file("apps/brapi/mw_variables_datatypes.R", package = "brapiTS"))
 source(system.file("apps/brapi/mw_variables_ontologies.R", package = "brapiTS"))
